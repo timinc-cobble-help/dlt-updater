@@ -1,0 +1,45 @@
+/* Custom Class-less version for React */
+@use "@picocss/pico/scss/pico" with (
+  
+  // Define the root element used to target <header>, <main>, <footer>
+  // with $enable-semantic-container and $enable-responsive-spacings
+  $semantic-root-element: "#pico-root",
+  
+  // Enable <header>, <main>, <footer> inside $semantic-root-element as containers
+  $enable-semantic-container: true,
+
+  // Enable .classes
+  $enable-classes: true
+);
+
+#pico-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+#pico-root main {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+#pico-root footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+#pico-root footer .logo {
+  height: 1em;
+}
+
+[data-tooltip]:not(a, button, input) {
+  border-bottom-style: none;
+}
+
+[data-tooltip]:not(a, button, input).term, .term {
+  border-bottom-style: dotted;
+  border-bottom-width: 1px;
+  border-bottom-color: initial;
+}
