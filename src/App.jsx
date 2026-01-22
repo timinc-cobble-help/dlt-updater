@@ -7,6 +7,13 @@ import downloadFile from "downloadfile-js";
 const dropperDictionary = {
   capture: ["captured"],
   ko: ["defeated", "killed"],
+  victory: ["victory"],
+  hatch: ["hatched"],
+  evolve: ["evolved"],
+  resurrect: ["resurrected"],
+  periodic: ["ticked"],
+  release: ["released"],
+  starter: ["starter_chosen"],
 };
 
 function App() {
@@ -22,21 +29,29 @@ function App() {
 
     const filesToAdd = [];
 
-    contents.forEach((relativePath) => {
-      if (
-        relativePath.startsWith("data/droploottables/loot_table/") &&
-        relativePath.endsWith(".json")
-      ) {
-        const [oldDropper, species, form] = relativePath
-          .slice("data/droploottables/loot_table/".length, -".json".length)
-          .split("/");
-        const newDroppers = dropperDictionary[oldDropper];
+    await Promise.all(
+      contents.map(async (relativePath, fileContent) => {
+        if (
+          relativePath.startsWith("data/droploottables/loot_table/") &&
+          relativePath.endsWith(".json")
+        ) {
+          // TODO: Uncomment when condition translation is ready.
+          // const oldContents = JSON.parse(await fileContent.async("string"));
+          // const newContents = crawlForConditions(oldContents);
+          // filesToAdd.push({
+          //   path: relativePath,
+          //   contents: JSON.stringify(newContents, null, 2),
+          // });
+          const [oldDropper, species, form] = relativePath
+            .slice("data/droploottables/loot_table/".length, -".json".length)
+            .split("/");
+          const newDroppers = dropperDictionary[oldDropper];
 
-        if (!newDroppers) return;
+          if (!newDroppers) return;
 
-        newDroppers.forEach((newDropper) => {
-          const dropperPath = `data/droploottables/drop/dropper/${newDropper}/${species}${form ? `_${form}` : ""}.json`;
-          const dropperContents = `
+          newDroppers.forEach((newDropper) => {
+            const dropperPath = `data/droploottables/drop/dropper/${newDropper}/${species}${form ? `_${form}` : ""}.json`;
+            const dropperContents = `
 {
   "trigger": "droploottables:${newDropper}",
   "conditions": [
@@ -52,10 +67,11 @@ function App() {
   ]
 }
 `.trim();
-          filesToAdd.push({ path: dropperPath, contents: dropperContents });
-        });
-      }
-    });
+            filesToAdd.push({ path: dropperPath, contents: dropperContents });
+          });
+        }
+      }),
+    );
 
     filesToAdd.forEach(({ path, contents }) => {
       zip.file(path, contents);
