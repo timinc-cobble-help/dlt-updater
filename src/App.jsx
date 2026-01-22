@@ -6,7 +6,7 @@ import downloadFile from "downloadfile-js";
 
 const dropperDictionary = {
   capture: ["captured"],
-  ko: ["defeated", "fainted"],
+  ko: ["defeated", "killed"],
 };
 
 function App() {
